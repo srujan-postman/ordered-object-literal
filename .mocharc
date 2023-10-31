@@ -1,5 +1,10 @@
 {
-   "ui": "bdd",
-   "slow": 100,
-   "require": ["chai/register-expect"]
+  "ui": "bdd",
+  "slow": 100,
+  "require": [
+    "chai/register-expect"
+  ],
+  "extension": [
+    "mjs"
+  ]
 }

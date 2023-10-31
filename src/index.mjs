@@ -4,7 +4,20 @@ export const ORDER_KEY_ID = `__object_order_${TIMESTAMP}__`;
 
 const ORDER_KEY = Symbol.for(ORDER_KEY_ID);
 const STRINGIFIED_ORDER_KEY = String(ORDER_KEY);
-
+const specialFields = [
+  '__defineGetter__',
+  '__defineSetter__',
+  '__lookupGetter__',
+  '__lookupSetter__',
+  '__proto__',
+  'constructor',
+  'hasOwnProperty',
+  'isPrototypeOf',
+  'propertyIsEnumerable',
+  'toLocaleString',
+  'toString',
+  'valueOf'
+];
 const traps = {
   defineProperty(target, key, descriptor) {
     if (!(key in target) && ORDER_KEY in target) {
@@ -19,7 +32,6 @@ const traps = {
 
     return Reflect.defineProperty(target, key, descriptor);
   },
-
   deleteProperty(target, key) {
     const hasKey = key in target;
     const deleted = Reflect.deleteProperty(target, key);
@@ -48,6 +60,8 @@ const traps = {
 
     if (set && !hasKey && ORDER_KEY in target) {
       target[ORDER_KEY].push(key);
+    } else if((set && hasKey && ORDER_KEY in target) && specialFields.includes(key)){
+    target[ORDER_KEY].push(key);
     }
 
     return set;
